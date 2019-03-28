@@ -5,7 +5,7 @@
         "x-ms-code-generation-settings": {
             "name": "MonitorManagementClient"
         },
-        "version": "2019-03-01"
+        "version": "2018-09-01"
     },
     "host": "management.azure.com",
     "schemes": [
@@ -504,10 +504,6 @@
                     "type": "string",
                     "description": "The email address of this receiver."
                 },
-                "useCommonAlertSchema": {
-                    "type": "boolean",
-                    "description": "Indicates whether to use common alert schema."
-                },
                 "status": {
                     "readOnly": true,
                     "$ref": "#/definitions/ReceiverStatus",
@@ -516,8 +512,7 @@
             },
             "required": [
                 "name",
-                "emailAddress",
-                "useCommonAlertSchema"
+                "emailAddress"
             ]
         },
         "SmsReceiver": {
@@ -557,16 +552,11 @@
                 "serviceUri": {
                     "type": "string",
                     "description": "The URI where webhooks should be sent."
-                },
-                "useCommonAlertSchema": {
-                    "type": "boolean",
-                    "description": "Indicates whether to use common alert schema."
                 }
             },
             "required": [
                 "name",
-                "serviceUri",
-                "useCommonAlertSchema"
+                "serviceUri"
             ]
         },
         "ItsmReceiver": {
@@ -644,18 +634,13 @@
                 "serviceUri": {
                     "type": "string",
                     "description": "The URI where webhooks should be sent."
-                },
-                "useCommonAlertSchema": {
-                    "type": "boolean",
-                    "description": "Indicates whether to use common alert schema."
                 }
             },
             "required": [
                 "automationAccountId",
                 "runbookName",
                 "webhookResourceId",
-                "isGlobalRunbook",
-                "useCommonAlertSchema"
+                "isGlobalRunbook"
             ]
         },
         "VoiceReceiver": {
@@ -694,17 +679,12 @@
                 "callbackUrl": {
                     "type": "string",
                     "description": "The callback url where http request sent to."
-                },
-                "useCommonAlertSchema": {
-                    "type": "boolean",
-                    "description": "Indicates whether to use common alert schema."
                 }
             },
             "required": [
                 "name",
                 "resourceId",
-                "callbackUrl",
-                "useCommonAlertSchema"
+                "callbackUrl"
             ]
         },
         "AzureFunctionReceiver": {
@@ -725,18 +705,13 @@
                 "httpTriggerUrl": {
                     "type": "string",
                     "description": "The http trigger url where http request sent to."
-                },
-                "useCommonAlertSchema": {
-                    "type": "boolean",
-                    "description": "Indicates whether to use common alert schema."
                 }
             },
             "required": [
                 "name",
                 "functionAppResourceId",
                 "functionName",
-                "httpTriggerUrl",
-                "useCommonAlertSchema"
+                "httpTriggerUrl"
             ]
         },
         "ArmRoleReceiver": {
@@ -749,16 +724,11 @@
                 "roleId": {
                     "type": "string",
                     "description": "The arm role id."
-                },
-                "useCommonAlertSchema": {
-                    "type": "boolean",
-                    "description": "Indicates whether to use common alert schema."
                 }
             },
             "required": [
                 "name",
-                "roleId",
-                "useCommonAlertSchema"
+                "roleId"
             ]
         },
         "ReceiverStatus": {
