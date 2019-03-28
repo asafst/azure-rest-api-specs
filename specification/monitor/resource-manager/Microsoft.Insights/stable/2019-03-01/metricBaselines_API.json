@@ -5,7 +5,7 @@
       "x-ms-code-generation-settings": {
         "name": "MonitorManagementClient"
       },
-      "version": "2019-03-01"
+      "version": "2018-09-01"
     },
     "host": "management.azure.com",
     "schemes": [
@@ -36,19 +36,23 @@
       }
     },
     "paths": {
-      "/{resourceUri}/providers/microsoft.insights/baseline/{metricName}": {
+      "/{resourceUri}/providers/microsoft.insights/metricBaselines": {
         "get": {
           "tags": [
-            "Baseline"
+            "Baseline",
+            "Metric"
           ],
-          "operationId": "MetricBaseline_Get",
-          "description": "**Gets the baseline values for a specific metric**.",
+          "operationId": "MetricBaselines_Get",
+          "description": "**Gets the metric baseline values**.",
           "parameters": [
             {
               "$ref": "#/parameters/ExtendedResourceUriParameter"
             },
             {
-              "$ref": "#/parameters/MetricNameParameter"
+              "$ref": "#/parameters/MetricNamesParameter"
+            },
+            {
+              "$ref": "#/parameters/MetricNamespaceParameter"
             },
             {
               "$ref": "#/parameters/TimespanParameter"
@@ -57,26 +61,23 @@
               "$ref": "#/parameters/IntervalParameter"
             },
             {
-              "$ref": "#/parameters/AggregationParameter"
+              "$ref": "#/parameters/AggregationsParameter"
             },
             {
               "$ref": "#/parameters/SensitivitiesParameter"
+            },
+            {
+              "name": "$filter",
+              "in": "query",
+              "type": "string",
+              "description": "The **$filter** is used to reduce the set of metric data returned.<br>Example:<br>Metric contains metadata A, B and C.<br>- Return all time series of C where A = a1 and B = b1 or b2<br>**$filter=A eq ‘a1’ and B eq ‘b1’ or B eq ‘b2’ and C eq ‘*’**<br>- Invalid variant:<br>**$filter=A eq ‘a1’ and B eq ‘b1’ and C eq ‘*’ or B = ‘b2’**<br>This is invalid because the logical or operator cannot separate two different metadata names.<br>- Return all time series where A = a1, B = b1 and C = c1:<br>**$filter=A eq ‘a1’ and B eq ‘b1’ and C eq ‘c1’**<br>- Return all time series where A = a1<br>**$filter=A eq ‘a1’ and B eq ‘*’ and C eq ‘*’**.",
+              "required": false
             },
             {
               "$ref": "#/parameters/BaselineResultTypeParameter"
             },
             {
               "$ref": "#/parameters/ApiVersionParameter"
-            },
-            {
-              "$ref": "#/parameters/MetricNamespaceParameter"
-            },
-            {
-              "name": "$filter",
-              "in": "query",
-              "type": "string",
-              "description": "The **$filter** is used to describe a set of dimensions with their concrete values which produce a specific metric�s time series, in which a baseline is requested for.",
-              "required": false
             }
           ],
           "responses": {
@@ -94,40 +95,12 @@
             }
           },
           "x-ms-examples": {
-            "Get Metric for data": { "$ref": "./examples/GetBaseline.json" },
-            "Get Metric for metadata": { "$ref": "./examples/GetBaselineMetadata.json" }
+            "Get Metric Baselines": { "$ref": "./examples/MetricBaselines.json" }
           }
         }
       }
     },
     "definitions": {
-      "LocalizableString": {
-        "required": [ "value" ],
-        "properties": {
-          "value": {
-            "type": "string",
-            "description": "The invariant value."
-          },
-          "localizedValue": {
-            "type": "string",
-            "description": "The locale specific value."
-          }
-        },
-        "description": "The localizable string class."
-      },
-      "BaselineMetadataValue": {
-        "properties": {
-          "name": {
-            "$ref": "#/definitions/LocalizableString",
-            "description": "The name of the metadata."
-          },
-          "value": {
-            "type": "string",
-            "description": "The value of the metadata."
-          }
-        },
-        "description": "Represents a baseline metadata value."
-      },
       "ErrorResponse": {
         "description": "Describes the format of Error response.",
         "type": "object",
@@ -145,31 +118,6 @@
       "BaselineResponse": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "readOnly": true,
-            "description": "The metric baseline ID."
-          },
-          "type": {
-            "type": "string",
-            "readOnly": true,
-            "description": "The resource type of the baseline resource."
-          },
-          "name": {
-            "$ref": "#/definitions/LocalizableString",
-            "readOnly": true,
-            "description": "The name and the display name of the metric, i.e. it is localizable string."
-          },
-          "properties": {
-            "x-ms-client-flatten": true,
-            "$ref": "#/definitions/BaselineProperties",
-            "description": "The properties of the baseline."
-          }
-        },
-        "description": "The response to a baseline query."
-      },
-      "BaselineProperties": {
-        "properties": {
           "timespan": {
             "type": "string",
             "description": "The timespan for which the data was retrieved. Its value consists of two datetimes concatenated, separated by '/'.  This may be adjusted in the future and returned back from what was originally requested."
@@ -179,35 +127,99 @@
             "format": "duration",
             "description": "The interval (window size) for which the metric data was returned in.  This may be adjusted in the future and returned back from what was originally requested.  This is not present if a metadata request was made."
           },
+          "namespace": {
+            "type": "string",
+            "description": "The namespace of the metrics been queried."
+          },
+          "value": {
+            "$ref": "#/definitions/MetricBaseline",
+            "description": "the properties of the baseline."
+          }
+        },
+        "required": [ "timespan", "interval", "value" ],
+        "description": "The response to a metric baselines query."
+      },
+      "MetricBaseline": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the metric baseline Id."
+          },
+          "type": {
+            "type": "string",
+            "readOnly": true,
+            "description": "the resource type of the metric baseline resource."
+          },  
+          "metricName": {
+            "type": "string",
+            "readOnly": true,
+            "description": "the name of the metric."
+          },        
+          "baselines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TimeSeriesBaseline"
+            },
+            "description": "the baseline for each time series that was queried."
+          }
+        },
+        "required": [ "id", "type", "metricName", "baselines" ],
+        "description": "The baseline results of a specific metric."
+      },
+      "TimeSeriesBaseline": {
+        "properties": {
           "aggregation": {
             "type": "string",
             "description": "The aggregation type of the metric."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/MetricDimension"
+            },
+            "description": "the dimensions of this time series."
           },
           "timestamps": {
             "type": "array",
             "items": {
               "type": "string",
               "format": "date-time",
-              "description": "The timestamp for the baseline value in ISO 8601 format."
+              "description": "the timestamp for the baseline value in ISO 8601 format."
             },
-            "description": "The array of timestamps of the baselines."
+            "description": "the array of timestamps of the baselines."
           },
-          "baseline": {
+          "data": {
             "type": "array",
             "items": {
               "$ref": "#/definitions/Baseline"
             },
-            "description": "The baseline values for each sensitivity."
+            "description": "the baseline values for each sensitivity."
           },
           "metadata": {
             "type": "array",
             "items": {
               "$ref": "#/definitions/BaselineMetadataValue"
             },
-            "description": "The baseline metadata values."
+            "description": "the baseline metadata values."
           }
         },
-        "description": "The baseline properties class."
+        "required": [ "aggregation", "timestamps", "data" ],
+        "description": "The time series baseline class."
+      },
+      "MetricDimension": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "the metric dimension name."
+          },
+          "value": {
+            "type": "string",
+            "description": "the metric dimension value."
+          }
+        },
+        "required": [ "name", "value" ],
+        "description": "The metric dimension name and value."
       },
       "Baseline": {
         "type": "object",
@@ -223,7 +235,7 @@
               "name": "Sensitivity",
               "modelAsString": false
             },
-            "description": "The sensitivity of the baseline."
+            "description": "the sensitivity of the baseline."
           },
           "lowThresholds": {
             "type": "array",
@@ -246,6 +258,20 @@
         },
         "required": [ "sensitivity", "lowThresholds", "highThresholds" ],
         "description": "The baseline values for a single sensitivity value."
+      },
+      "BaselineMetadataValue": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "the name of the metadata."
+          },
+          "value": {
+            "type": "string",
+            "description": "the value of the metadata."
+          }
+        },
+        "required": [ "name", "value" ],
+        "description": "Represents a baseline metadata value."
       }
     },
     "parameters": {
@@ -257,14 +283,6 @@
         "description": "The identifier of the resource. It has the following structure: subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/{providerName}/{resourceName}. For example: subscriptions/b368ca2f-e298-46b7-b0ab-012281956afa/resourceGroups/vms/providers/Microsoft.Compute/virtualMachines/vm1",
         "x-ms-parameter-location": "method",
         "x-ms-skip-url-encoding": true
-      },
-      "MetricNameParameter": {
-        "name": "metricName",
-        "in": "path",
-        "required": true,
-        "type": "string",
-        "description": "The name of the metric to retrieve the baseline for.",
-        "x-ms-parameter-location": "method"
       },
       "TimespanParameter": {
         "name": "timespan",
@@ -283,7 +301,23 @@
         "description": "The interval (i.e. timegrain) of the query.",
         "x-ms-parameter-location": "method"
       },
-      "AggregationParameter": {
+      "MetricNamesParameter": {
+        "name": "metricnames",
+        "in": "query",
+        "required": false,
+        "type": "string",
+        "description": "The names of the metrics (comma separated) to retrieve.",
+        "x-ms-parameter-location": "method"
+      },
+      "MetricNamespaceParameter": {
+        "name": "metricnamespace",
+        "in": "query",
+        "required": false,
+        "type": "string",
+        "description": "Metric namespace to query metric definitions for.",
+        "x-ms-parameter-location": "method"
+      },
+      "AggregationsParameter": {
         "name": "aggregation",
         "in": "query",
         "required": false,
@@ -321,14 +355,6 @@
         "required": true,
         "type": "string",
         "description": "Client Api Version."
-      },
-      "MetricNamespaceParameter": {
-        "name": "metricnamespace",
-        "in": "query",
-        "required": false,
-        "type": "string",
-        "description": "Metric namespace to query metric definitions for.",
-        "x-ms-parameter-location": "method"
       }
     }
-  }
+}

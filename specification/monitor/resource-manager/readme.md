@@ -31,17 +31,6 @@ openapi-type: arm
 tag: package-2019-03
 ```
 
-
-### Tag: package-2019-03
-
-These settings apply only when `--tag=package-2019-03` is specified on the command line.
-
-```yaml $(tag) == 'package-2019-03'
-input-file:
-  - Microsoft.Insights/stable/2019-03-01/actionGroups_API.json
-  - Microsoft.Insights/stable/2019-03-01/baseline_API.json
-  - Microsoft.Insights/stable/2019-03-01/calculateBaseline_API.json
-```
 ### Tag: package-2019-03
 
 These settings apply only when `--tag=package-2019-03` is specified on the command line.
@@ -64,6 +53,7 @@ input-file:
 - Microsoft.Insights/stable/2018-01-01/metrics_API.json
 - Microsoft.Insights/preview/2017-11-01-preview/baseline_API.json
 - Microsoft.Insights/preview/2017-11-01-preview/calculateBaseline_API.json
+- Microsoft.Insights/stable/2019-03-01/metricBaselines_API.json
 - Microsoft.Insights/stable/2018-03-01/metricAlert_API.json
 - Microsoft.Insights/stable/2018-04-16/scheduledQueryRule_API.json
 - Microsoft.Insights/preview/2017-12-01-preview/metricNamespaces_API.json
