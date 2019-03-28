@@ -28,14 +28,25 @@ These are the global settings for the MonitorClient API.
 title: MonitorClient
 description: Monitor Management Client
 openapi-type: arm
-tag: package-2019-03
+tag: package-2018-09
 ```
 
+
+### Tag: package-2018-09
+
+These settings apply only when `--tag=package-2018-09` is specified on the command line.
+
+```yaml $(tag) == 'package-2018-09'
+input-file:
+  - Microsoft.Insights/stable/2018-09-01/actionGroups_API.json
+  - Microsoft.Insights/stable/2018-09-01/baseline_API.json
+  - Microsoft.Insights/stable/2018-09-01/calculateBaseline_API.json
+```
 ### Tag: package-2019-03
 
 These settings apply only when `--tag=package-2019-03` is specified on the command line.
 
-```yaml $(tag) == 'package-2019-03'
+``` yaml $(tag) == 'package-2019-03'
 input-file:
 - Microsoft.Insights/stable/2015-04-01/autoscale_API.json
 - Microsoft.Insights/stable/2015-04-01/operations_API.json
@@ -63,7 +74,7 @@ input-file:
 
 These settings apply only when `--tag=package-2018-11-preview` is specified on the command line.
 
-```yaml $(tag) == 'package-2018-11-preview'
+``` yaml $(tag) == 'package-2018-11-preview'
 input-file:
 - Microsoft.Insights/stable/2015-04-01/autoscale_API.json
 - Microsoft.Insights/stable/2015-04-01/operations_API.json
