@@ -95,7 +95,7 @@
             "200": {
               "description": "Successful request to get the list of metric values.",
               "schema": {
-                "$ref": "#/definitions/BaselineResponse"
+                "$ref": "#/definitions/MetricBaselinesResponse"
               }
             }
           }
@@ -117,7 +117,7 @@
           }
         }
       },
-      "BaselineResponse": {
+      "MetricBaselinesResponse": {
         "type": "object",
         "properties": {
           "timespan": {
@@ -177,7 +177,7 @@
           "dimensions": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/MetricDimension"
+              "$ref": "#/definitions/MetricSingleDimension"
             },
             "description": "the dimensions of this time series."
           },
@@ -200,7 +200,7 @@
           "metadata": {
             "type": "array",
             "items": {
-              "$ref": "#/definitions/BaselineMetadataValue"
+              "$ref": "#/definitions/BaselineMetadata"
             },
             "description": "the baseline metadata values."
           }
@@ -208,16 +208,16 @@
         "required": [ "aggregation", "timestamps", "data" ],
         "description": "The time series baseline class."
       },
-      "MetricDimension": {
+      "MetricSingleDimension": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "the metric dimension name."
+            "description": "Name of the dimension."
           },
           "value": {
             "type": "string",
-            "description": "the metric dimension value."
+            "description": "Value of the dimension."
           }
         },
         "required": [ "name", "value" ],
@@ -261,15 +261,15 @@
         "required": [ "sensitivity", "lowThresholds", "highThresholds" ],
         "description": "The baseline values for a single sensitivity value."
       },
-      "BaselineMetadataValue": {
+      "BaselineMetadata": {
         "properties": {
           "name": {
             "type": "string",
-            "description": "the name of the metadata."
+            "description": "Name of the baseline metadata."
           },
           "value": {
             "type": "string",
-            "description": "the value of the metadata."
+            "description": "Value of the baseline metadata."
           }
         },
         "required": [ "name", "value" ],
@@ -324,7 +324,7 @@
         "in": "query",
         "required": false,
         "type": "string",
-        "description": "The aggregation type of the metric to retrieve the baseline for.",
+        "description": "The list of aggregation types (comma separated) to retrieve.",
         "x-ms-parameter-location": "method"
       },
       "SensitivitiesParameter": {
