@@ -5,7 +5,7 @@
       "x-ms-code-generation-settings": {
         "name": "MonitorManagementClient"
       },
-      "version": "2018-09-01"
+      "version": "2019-03-01"
     },
     "host": "management.azure.com",
     "schemes": [
@@ -44,6 +44,11 @@
           ],
           "operationId": "MetricBaselines_Get",
           "description": "**Gets the metric baseline values**.",
+          "x-ms-examples": {
+            "Get metric baselines": {
+              "$ref": "./examples/metricBaselines.json"
+            }
+          },
           "parameters": [
             {
               "$ref": "#/parameters/ExtendedResourceUriParameter"
@@ -93,9 +98,6 @@
                 "$ref": "#/definitions/BaselineResponse"
               }
             }
-          },
-          "x-ms-examples": {
-            "Get Metric Baselines": { "$ref": "./examples/MetricBaselines.json" }
           }
         }
       }
